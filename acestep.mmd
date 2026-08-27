@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    
+    actor U as Usuário
+    participant C as Claude (Skill / Tool)
+    participant A as API ACE-Step
+
+    U->>C: Prompt: "Crie uma música pop animada sobre o verão"
+    
+    Note over C: Claude processa o texto e<br/>extrai/formata os atributos
+    
+    C->>A: POST /release_task<br/>{"prompt": "música pop animada...", "thinking": true, "audio_format": "mp3"}
+    A-->>C: Retorna JSON com o task_id e status "queued"
+    
+    loop Polling (Consulta de Status)
+        C->>A: POST /query_result<br/>{"task_id_list": ["task_id"]}
+        A-->>C: Retorna status: 0 (Em andamento)
+        Note over C: Claude aguarda intervalo de tempo...
+    end
+    
+    C->>A: POST /query_result<br/>{"task_id_list": ["task_id"]}
+    A-->>C: Retorna status: 1 (Sucesso) + URL/path do áudio
+    
+    C->>A: GET /v1/audio?path=[caminho_do_arquivo]
+    A-->>C: Retorna o binário do arquivo .mp3
+    
+    C-->>U: Entrega o arquivo .mp3 final para o usuário
+
