@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ace-step-generator": {
+      "command": "python",
+      "args": [
+        "C:/caminho/para/seu/projeto/ace_step_mcp.py"
+      ]
+    }
+  }
+}
