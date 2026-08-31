@@ -1,28 +1,36 @@
 sequenceDiagram
-    autonumber
-    
-    actor U as Usuário
-    participant C as Claude (Skill / Tool)
-    participant A as API ACE-Step
+    participant U as Usuário
+    participant C as Claude (LLM)
+    participant MCP as acestepmcp.py (FastMCP)
+    participant Auto as auto.py (Script)
+    participant ACE as Servidor ACE-Step
 
-    U->>C: Prompt: "Crie uma música pop animada sobre o verão"
+    U->>C: Solicita geração de música
+    C->>MCP: Invoca tool: gerar_musicas(tarefas)
     
-    Note over C: Claude processa o texto e<br/>extrai/formata os atributos
+    activate MCP
+    MCP->>MCP: Processa parâmetros e file_paths
+    MCP->>Auto: Chama gerar_e_baixar_musica(payload, file_paths)
     
-    C->>A: POST /release_task<br/>{"prompt": "música pop animada...", "thinking": true, "audio_format": "mp3"}
-    A-->>C: Retorna JSON com o task_id e status "queued"
+    activate Auto
+    Auto->>ACE: POST /release_task (JSON / form-data)
+    ACE-->>Auto: Confirma criação e retorna task_id
     
-    loop Polling (Consulta de Status)
-        C->>A: POST /query_result<br/>{"task_id_list": ["task_id"]}
-        A-->>C: Retorna status: 0 (Em andamento)
-        Note over C: Claude aguarda intervalo de tempo...
+    loop Polling (A cada 10 segundos)
+        Auto->>ACE: POST /query_result (task_id)
+        ACE-->>Auto: Retorna status (0: Gerando...)
+        Note over Auto, ACE: Aguarda o término do processamento
+        Auto->>ACE: POST /query_result (task_id)
+        ACE-->>Auto: Retorna status (1: Sucesso) + Endereços dos arquivos
     end
-    
-    C->>A: POST /query_result<br/>{"task_id_list": ["task_id"]}
-    A-->>C: Retorna status: 1 (Sucesso) + URL/path do áudio
-    
-    C->>A: GET /v1/audio?path=[caminho_do_arquivo]
-    A-->>C: Retorna o binário do arquivo .mp3
-    
-    C-->>U: Entrega o arquivo .mp3 final para o usuário
 
+    Auto->>ACE: GET (Download do endpoint de áudio)
+    ACE-->>Auto: Bytes do arquivo de áudio
+    Auto->>Auto: Salva arquivo localmente no diretório ./downloads
+    Auto-->>MCP: Retorna o controle para o MCP
+    deactivate Auto
+    
+    MCP-->>C: Retorna string ("Música X gerada com sucesso.")
+    deactivate MCP
+    
+    C-->>U: Informa que a música foi criada

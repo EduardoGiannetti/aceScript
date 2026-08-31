@@ -2,7 +2,7 @@ import os
 from mcp.server.fastmcp import FastMCP
 import requests
 import json
-from auto import gerar_e_baixar_musica, BASE_URL
+from auto import DOWNLOAD_DIR, checar_status_musica, gerar_e_baixar_musica, BASE_URL
 
 mcp = FastMCP("ACE-Step Music Generator")
 
@@ -40,31 +40,29 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     - inference_steps (int, opcional): Número de passos de inferência para a geração do áudio.    
     """
     resultados = []
-    total = len(tarefas)
-
     for i, item in enumerate(tarefas, 1):
         payload = item.copy()
         file_paths = {}
 
-        # Trata áudio de referência enviando pela chave esperada no multipart/form-data
         ref_path = payload.pop("reference_audio_path", None)
         if ref_path and os.path.exists(ref_path):
             file_paths["reference_audio"] = ref_path
             if "task_type" not in payload:
                 payload["task_type"] = "cover"
-                
-        payload_json = json.dumps(payload, indent=2, ensure_ascii=False)
-        resultados.append(f"**Payload criado:**\n```json\n{payload_json}\n```")
-        # Garante padrão de pensamento ativado se omitido pelo usuário
-        #if "thinking" not in payload:
-            #payload["thinking"] = True
 
-        print(f"Executing task {i}/{total} for: {payload.get('prompt')}")
-        gerar_e_baixar_musica(payload=payload, file_paths=file_paths)
-        resultados.append(f"Música {i}/{total} ('{payload.get('prompt')}') gerada com sucesso."
-                          )
+        task_id = gerar_e_baixar_musica(payload=payload, file_paths=file_paths)
+        resultados.append(f"Tarefa {i} enviada com sucesso! ID: {task_id}. Use 'verificar_status_musica' para acompanhar.")
 
     return "\n".join(resultados)
+
+@mcp.tool()
+def verificar_status_musica(task_id: str) -> str:
+    """
+    Verifica o status de uma tarefa de geração de música no ACE-Step.
+    Se estiver pronta, faz o download. Use passando o task_id obtido na ferramenta 'gerar_musicas'.
+    """
+    return checar_status_musica(task_id)
+
 @mcp.tool()
 def server_status ()-> str:
     """
