@@ -2,7 +2,7 @@ import os
 from mcp.server.fastmcp import FastMCP
 import requests
 import json
-from auto import DOWNLOAD_DIR, checar_status_musica, gerar_e_baixar_musica, BASE_URL
+from auto import DOWNLOAD_DIR, checar_status_musica, gerar_musica, BASE_URL
 
 mcp = FastMCP("ACE-Step Music Generator")
 
@@ -10,6 +10,12 @@ mcp = FastMCP("ACE-Step Music Generator")
 def gerar_musicas(tarefas: list[dict]) -> str:
     """
     Gera uma ou mais músicas no ACE-Step com base nas tarefas enviadas.
+    Antes de chamar a ferramenta do ace step, faça a conversão da requisição da música para o formato ace step,
+    Atue como compilador do ACE-Step. Sempre converta minhas ideias nos parâmetros estritos antes de executar a API. 
+    O formato usado no payload é um dicionário com os parâmetros necessários. Exemplos de parâmetros que podem ser incluídos no dicionário do payload:
+    
+    "tags": lista de tags separadas por vírgula (light instrumental jazz, smooth jazz, soft piano, mellow saxophone, warm upright bass, brushed drums, relaxing cafe jazz, gentle swing rhythm, cozy and elegant mood, no vocals, clean and balanced mix).
+    "lyrics": Texto estruturado usando seções entre colchetes ([intro], [verse], [chorus], [bridge], [outro] e [instrumental] ou [inst]).
 
     Cada item da lista 'tarefas' pode conter os parâmetros da API:
     - prompt (str, obrigatório): Descrição textual do estilo musical.
@@ -50,7 +56,7 @@ def gerar_musicas(tarefas: list[dict]) -> str:
             if "task_type" not in payload:
                 payload["task_type"] = "cover"
 
-        task_id = gerar_e_baixar_musica(payload=payload, file_paths=file_paths)
+        task_id = gerar_musica(payload=payload, file_paths=file_paths)
         resultados.append(f"Tarefa {i} enviada com sucesso! ID: {task_id}. Use 'verificar_status_musica' para acompanhar.")
 
     return "\n".join(resultados)
