@@ -2,6 +2,7 @@ import os
 from mcp.server.fastmcp import FastMCP
 import requests
 import json
+import subprocess
 from auto import DOWNLOAD_DIR, checar_status_musica, gerar_musica, BASE_URL
 
 mcp = FastMCP("ACE-Step Music Generator")
@@ -9,6 +10,7 @@ mcp = FastMCP("ACE-Step Music Generator")
 @mcp.tool()
 def gerar_musicas(tarefas: list[dict]) -> str:
     """
+    Antes de tudo, execute a tool de server_status, para verificar se o ace step está rodando e então
     Gera uma ou mais músicas no ACE-Step com base nas tarefas enviadas.
     Antes de chamar a ferramenta do ace step, faça a conversão da requisição da música para o formato ace step,
     Atue como compilador do ACE-Step. Sempre converta minhas ideias nos parâmetros estritos antes de executar a API. 
@@ -17,6 +19,8 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     "tags": lista de tags separadas por vírgula (light instrumental jazz, smooth jazz, soft piano, mellow saxophone, warm upright bass, brushed drums, relaxing cafe jazz, gentle swing rhythm, cozy and elegant mood, no vocals, clean and balanced mix).
     "lyrics": Texto estruturado usando seções entre colchetes ([intro], [verse], [chorus], [bridge], [outro] e [instrumental] ou [inst]).
 
+    Sempre use por padrão batch size 1, a não ser que seja especificado pelo usuário pela criação de mais versões da música
+    
     Cada item da lista 'tarefas' pode conter os parâmetros da API:
     - prompt (str, obrigatório): Descrição textual do estilo musical.
     - sample_query (str, opcional): Descrição em linguagem natural para guiar a geração de uma amostra (ex: "a soft Bengali love song").
@@ -74,7 +78,8 @@ def server_status ()-> str:
     """
     Verifica o status do servidor ACE-Step, se está ativo e respondendo corretamente.
     Chame essa função sempre que o usuário perguntar se o servidor está online, ou ativo,
-    funcionando, rodando ou se deseja verificar a saúde do serviço.
+    funcionando, rodando ou se deseja verificar a saúde do serviço. Se for retornado que o ace step
+    está offline completamente, utilize a tool awake_server, para ligar o servidor
     """
     try:
         response = requests.get(f"{BASE_URL}/health")
@@ -86,5 +91,26 @@ def server_status ()-> str:
             return f"Servidor ACE-Step retornou status inesperado: {status_info}"
     except requests.RequestException as e:
         return f"Erro ao verificar o status do servidor: {e}"
+    
+@mcp.tool()
+def awake_server()-> str:
+    """
+    Roda o arquivo de inicialização do servidor da API do ace step caso ele esteja fora do ar,
+    executando um comando no sistema em segundo plano, para rodar o arquivo .bat ou .sh se for linux/mac,
+    com o caminho absoluto do arquivo.
+    """
+    COMANDO = r"C:\Users\EduardoGiannetti\Downloads\ACE-Step\start_api_server.bat"
+    if not os.path.exists(COMANDO):
+        return f"O arquivo de inicialização não foi encontrado"
+    try:
+        if os.name == 'nt':
+            subprocess.Popen(f'start cmd /k "{COMANDO}"', shell=True)
+        else:
+            subprocess.Popen(["x-terminal-emulator", "-e", COMANDO])
+        
+        return "Nova janela de terminal aberta com sucesso. Acompanhe os logs da API diretamente na janela do prompt."
+    except Exception as e:
+        return f"Erro ao tentar abrir o terminal com os logs: {str(e)}"
+        
 if __name__ == "__main__":
     mcp.run()
