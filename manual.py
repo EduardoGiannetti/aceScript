@@ -1,12 +1,9 @@
 from auto import gerar_musica
 if __name__ == "__main__":
     payload = {
-        "prompt": "funny comedic Brazilian song, upbeat meme music, bouncy rhythm, acoustic guitar and silly synths, humorous and energetic mood",
-        "tags": "comedy, funny, upbeat, bouncy, acoustic, humorous, meme, clear vocals, male vocalist",
+        "prompt": "paródia de música meme brasileira, comentários de internet cantados, voz masculina dramática e satírica, violão acústico simples, tom cômico exagerado, estilo viral de comentários do YouTube.",
+        "tags": "comedy, funny, orchestral, epic, acoustic, humorous, meme, clear vocals, male vocalist",
         "lyrics": """
-        [intro]
-        Bora ver o que rolou nos comentários
-
         [verse]
         Esse cara sabe bem fazer isso, viu
         Foi ele que vazou o GTA 6
@@ -28,11 +25,12 @@ if __name__ == "__main__":
         [instrumental]
         """,
         "vocal_language": "pt",
-        "task_type": "repaint",
+        #"task_type": "cover",
+        #"audio_cover_strength": 0.5,
         "batch_size": 2
     }
     file_path = {
-        "reference_audio": r"C:\Users\EduardoGiannetti\Downloads\lilbro.mp3",
+        "reference_audio": r"C:\Users\EduardoGiannetti\Downloads\ttk.mp3"
     }
     task_id = gerar_musica(payload, file_paths=file_path)
     print(f"Tarefa enviada! ID: {task_id}")

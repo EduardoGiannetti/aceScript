@@ -1,0 +1,32 @@
+{
+    "model": "",
+    "thinking": "",
+
+    "audio_format": "",
+    "task_type": "",
+
+    "sample_mode": "",
+    "use_format": "",
+    
+    "inference_steps": "",
+    "guidance_scale": "",
+    "use_random_seed": "",
+    "shift": "",
+    "infer_method": "",
+
+    "use_adg": "",
+    "cfg_interval_start": "",
+    "cfg_interval_end": "",
+    "lm_model_path": "",
+    "lm_backend": "",
+    "lm_temperature": "",
+    "lm_top_k": "",
+    "lm_top_p": "",
+    "lm_repetition_penalty": "",
+    "lm_cfg_scale": "",
+    "lm_negative_prompt": "",
+    "use_cot_caption": "",
+    "use_cot_language": "",
+    "constrained_decoding": ""
+
+}

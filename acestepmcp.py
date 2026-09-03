@@ -10,16 +10,20 @@ mcp = FastMCP("ACE-Step Music Generator")
 @mcp.tool()
 def gerar_musicas(tarefas: list[dict]) -> str:
     """
-    Antes de tudo, execute a tool de server_status, para verificar se o ace step está rodando e então
-    Gera uma ou mais músicas no ACE-Step com base nas tarefas enviadas.
-    Antes de chamar a ferramenta do ace step, faça a conversão da requisição da música para o formato ace step,
-    Atue como compilador do ACE-Step. Sempre converta minhas ideias nos parâmetros estritos antes de executar a API. 
+    Antes de tudo, execute a tool de server_status, para verificar se o ace step está rodando. Sempre espere o servidor ligar primeiro, não pergunte por outro prompt, faça todo o fluxo SOMENTE com o prompt inicial.
+    E então gera uma ou mais músicas no ACE-Step com base nas tarefas enviadas.
+    Antes de chamar a ferramenta do ace step, faça a conversão da requisição da música para o formato ace step e não crie letras com detalhes da música (exemplo: (batidas repetidas)), faça a letra somente com a letra em si.
+    Atue como compilador do ACE-Step. Sempre converta minhas ideias nos parâmetros estritos antes de executar a API.
+    Crie o prompt e as instruções de forma extensa, com vários detalhes da música a ser feita, com várias tags e vários detalhes do estilo, e do que o meu prompt descreveu.
+    Faça os prompts com foco em geração de comentários cantados, onde os comentários de um post são viram letra para uma música como se fossem lidos porém de uma forma musical e não exatamente obedecendo a estrutura convencional de criação de músicas. 
+    
+    Sempre use por padrão batch size 1, a não ser que seja especificado pelo usuário pela criação de mais versões da música
+
     O formato usado no payload é um dicionário com os parâmetros necessários. Exemplos de parâmetros que podem ser incluídos no dicionário do payload:
     
     "tags": lista de tags separadas por vírgula (light instrumental jazz, smooth jazz, soft piano, mellow saxophone, warm upright bass, brushed drums, relaxing cafe jazz, gentle swing rhythm, cozy and elegant mood, no vocals, clean and balanced mix).
     "lyrics": Texto estruturado usando seções entre colchetes ([intro], [verse], [chorus], [bridge], [outro] e [instrumental] ou [inst]).
 
-    Sempre use por padrão batch size 1, a não ser que seja especificado pelo usuário pela criação de mais versões da música
     
     Cada item da lista 'tarefas' pode conter os parâmetros da API:
     - prompt (str, obrigatório): Descrição textual do estilo musical.
