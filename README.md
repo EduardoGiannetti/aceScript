@@ -26,6 +26,9 @@
   </tr>
 </table>
 
+## Exemplo com letra
+<video src="https://github.com/user-attachments/assets/1fe593dc-504a-4ce5-aefe-80bd3d2a4351" controls width="130"></video>
+
 
 
 
