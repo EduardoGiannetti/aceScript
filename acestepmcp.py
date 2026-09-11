@@ -25,7 +25,7 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     - NÂO CONFLITE ELEMENTOS: Mantenha coerência entre o tom da legenda e o estilo musical desejado.
 
     REGRAS DE LETRA PARA COMENTÁRIOS CANTADOS ('lyrics'):
-    - Adapte comentários de redes sociais em versos cantados, preservando a essência e o humor do comentário original, adaptando métricas para fluidez (6 a 10 sílabas por linha preferencialmente).
+    - Adapte comentários de redes sociais em versos cantados, preservando a essência e o humor do comentário original, adaptando métricas para fluidez.
     - Use marcas de estrutura em colchetes para guiar a linha do tempo (ex: [Intro], [Verse], [Comment 1], [Chorus], [Outro]).
     - RÓTULOS CONCISOS: Pode usar tags compostas simples (ex: [Chorus - afiado] ou [Verse - falado]), mas EVITE empilhar muitas tags (ex: [Chorus - poderoso - harmonizado - agudo - épico]).
     - SEM INSTRUÇÕES DE PRODUÇÃO NO TEXTO: NUNCA coloque ruídos, direções de palco ou efeitos entre parênteses dentro do texto da letra (ex: NÃO use "(batida cai)" ou "(risos)"). Limite a letra apenas às palavras que devem ser efetivamente cantadas/faladas.
@@ -34,10 +34,10 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     PARÂMETROS PADRÃO:
     - batch_size: Padrão 1 (use valores maiores até 8 apenas se o usuário solicitar variações/lotes).
     - model: Padrão "acestep-v15-turbo".
-    - thinking: Padrão True (ativa a inferência CoT do LM interno para BPM e metadados).
+    - thinking: Padrão True (ativa a inferência CoT do LM interno).
 
     ESTRUTURA DE CADA ITEM NA LISTA 'tarefas':
-    - prompt (str, obrigatório): Legenda rica de estilo/instrumentos (sem BPM/tom).
+    - prompt (str, obrigatório): Legenda rica de estilo/instrumentos.
     - lyrics (str, opcional): Letra adaptada dos comentários com tags [Verse], [Chorus], etc.
     - bpm (int, opcional): Tempo musical em BPM (ex: 120).
     - key_scale (str, opcional): Tom/escala (ex: 'C Major', 'Am').
@@ -45,7 +45,7 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     - audio_duration (float, opcional): Duração total em segundos.
     - batch_size (int, opcional): Quantidade de variações (padrão 1).
     - model (str, opcional): Modelo DiT (padrão "acestep-v15-turbo").
-    - thinking (bool, opcional): Ativa raciocínio CoT no LM (padrão True).
+    - thinking (bool, opcional): Ativa raciocínio CoT no LM (padrão False).
     - task_type (str, opcional): 'text2music', 'cover', 'repaint', etc.
     - reference_audio_path (str, opcional): Caminho absoluto de áudio de referência para estilo/timbre.
     - src_audio_path (str, opcional): Caminho absoluto de áudio de origem para cover ou edição local.    
