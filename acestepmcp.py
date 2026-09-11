@@ -10,48 +10,45 @@ mcp = FastMCP("ACE-Step Music Generator")
 @mcp.tool()
 def gerar_musicas(tarefas: list[dict]) -> str:
     """
-    Antes de tudo, execute a tool de server_status, para verificar se o ace step está rodando. Sempre espere o servidor ligar primeiro, não pergunte por outro prompt, faça todo o fluxo SOMENTE com o prompt inicial.
-    E então gera uma ou mais músicas no ACE-Step com base nas tarefas enviadas.
-    Antes de chamar a ferramenta do ace step, faça a conversão da requisição da música para o formato ace step e não crie letras com detalhes da música (exemplo: (batidas repetidas)), faça a letra somente com a letra em si.
-    Atue como compilador do ACE-Step. Sempre converta minhas ideias nos parâmetros estritos antes de executar a API.
-    Crie o prompt e as instruções de forma extensa, com vários detalhes da música a ser feita, com várias tags e vários detalhes do estilo, e do que o meu prompt descreveu.
-    Faça os prompts com foco em geração de comentários cantados, onde os comentários de um post são viram letra para uma música como se fossem lidos porém de uma forma musical e não exatamente obedecendo a estrutura convencional de criação de músicas. 
-    
-    Sempre use por padrão batch size 1, a não ser que seja especificado pelo usuário pela criação de mais versões da música
+    IMPORTANTE - FLUXO DE EXECUÇÃO:
+    1. Antes de chamar esta ferramenta, execute OBRIGATORIAMENTE a tool 'server_status' para verificar se o servidor ACE-Step está ativo.
+    2. Se o servidor estiver offline, invoque 'awake_server' para iniciá-lo antes de tentar gerar a música.
+    3. Realize todo o fluxo autonomamente a partir da ideia original do usuário, sem pedir confirmações intermediárias.
 
-    O formato usado no payload é um dicionário com os parâmetros necessários. Exemplos de parâmetros que podem ser incluídos no dicionário do payload:
-    
-    "tags": lista de tags separadas por vírgula (light instrumental jazz, smooth jazz, soft piano, mellow saxophone, warm upright bass, brushed drums, relaxing cafe jazz, gentle swing rhythm, cozy and elegant mood, no vocals, clean and balanced mix).
-    "lyrics": Texto estruturado usando seções entre colchetes ([intro], [verse], [chorus], [bridge], [outro] e [instrumental] ou [inst]).
+    PAPEL DE COMPILADOR (ESPECIALISTA EM COMENTÁRIOS CANTADOS):
+    Você atua como compilador/prompt engineer do ACE-Step 1.5. Converta as ideias do usuário e os comentários de posts em um payload estruturado para a API.
+    Não converta os comentários em uma outra letra com detalhes dos comentários, Ensira os comentários em si dentro da letra, adaptando-os para a estrutura mas contendo exatamente o texto inteiro do comentário.
 
-    
-    Cada item da lista 'tarefas' pode conter os parâmetros da API:
-    - prompt (str, obrigatório): Descrição textual do estilo musical.
-    - sample_query (str, opcional): Descrição em linguagem natural para guiar a geração de uma amostra (ex: "a soft Bengali love song").
-    - lyrics (str, opcional): Letra da música.
-    - audio_duration (float, opcional): Duração em segundos (ex: 60).
-    - audio_format (str, opcional): Define o formato do áudio ('mp3', 'wav', etc.). Default é 'mp3'.
-    - batch_size (int, opcional): Quantidade de gerações simultâneas em lote, com o limite máximo de 8.
-    - reference_audio_path (string, opcional): Caminho absoluto no servidor para o áudio de referência a ser usado para transferência de estilo.
-    - src_audio_path (string, opcional): Caminho absoluto no servidor para o áudio de origem para tarefas de repintura (repainting) ou cover.
-    - repainting_start (float, opcional): Determina o tempo inicial (em segundos) para começar uma repintura no áudio de origem.
-    - repainting_end (float, opcional): Determina o tempo final (em segundos) da repintura no áudio; o valor -1 processa até o final da faixa.
-    - audio_cover_strength (float, opcional): Define a força das alterações de cover (0.0 a 1.0); valores menores (como 0.2) são indicados para transferências sutis de estilo.
-    - reference_audio / ref_audio (file, opcional): Permite enviar/fazer upload do seu arquivo de áudio local como referência.
-    - src_audio / ctx_audio (file, opcional): Permite enviar/fazer upload do seu arquivo de áudio local como fonte (source/context). 
-    - bpm (int, opcional): Tempo musical em BPM (30-300).
-    - instruction (string, opcional): Instruções de edição a serem processadas; o sistema preenche automaticamente com base no task_type se deixado vazio.
+    DIRETRIZES DE PROMPT E CAPTION (baseado no manual do ACE-Step):
+    - 'prompt' / 'caption': Descreva o estilo geral, gênero, instrumentos, timbre vocal, textura e atmosfera (ex: "pop funk acelerado, vocais masculinos dinâmicos, síntese grave marcante, ritmo contagiante, produção limpa").
+    - SEPARAÇÃO DE METADADOS: NÃO inclua BPM, tom (key) ou fórmula de compasso dentro do texto da 'caption/prompt'. Use exclusivamente os parâmetros dedicados ('bpm', 'key_scale', 'time_signature').
+    - NÂO CONFLITE ELEMENTOS: Mantenha coerência entre o tom da legenda e o estilo musical desejado.
+
+    REGRAS DE LETRA PARA COMENTÁRIOS CANTADOS ('lyrics'):
+    - Adapte comentários de redes sociais em versos cantados, preservando a essência e o humor do comentário original, adaptando métricas para fluidez (6 a 10 sílabas por linha preferencialmente).
+    - Use marcas de estrutura em colchetes para guiar a linha do tempo (ex: [Intro], [Verse], [Comment 1], [Chorus], [Outro]).
+    - RÓTULOS CONCISOS: Pode usar tags compostas simples (ex: [Chorus - afiado] ou [Verse - falado]), mas EVITE empilhar muitas tags (ex: [Chorus - poderoso - harmonizado - agudo - épico]).
+    - SEM INSTRUÇÕES DE PRODUÇÃO NO TEXTO: NUNCA coloque ruídos, direções de palco ou efeitos entre parênteses dentro do texto da letra (ex: NÃO use "(batida cai)" ou "(risos)"). Limite a letra apenas às palavras que devem ser efetivamente cantadas/faladas.
+    - COERÊNCIA: Garanta que os instrumentos citados nas tags de estrutura da letra coincidam com o descrito na 'caption'.
+
+    PARÂMETROS PADRÃO:
+    - batch_size: Padrão 1 (use valores maiores até 8 apenas se o usuário solicitar variações/lotes).
+    - model: Padrão "acestep-v15-turbo".
+    - thinking: Padrão True (ativa a inferência CoT do LM interno para BPM e metadados).
+
+    ESTRUTURA DE CADA ITEM NA LISTA 'tarefas':
+    - prompt (str, obrigatório): Legenda rica de estilo/instrumentos (sem BPM/tom).
+    - lyrics (str, opcional): Letra adaptada dos comentários com tags [Verse], [Chorus], etc.
+    - bpm (int, opcional): Tempo musical em BPM (ex: 120).
     - key_scale (str, opcional): Tom/escala (ex: 'C Major', 'Am').
+    - vocal_language (str, opcional): Idioma principal ('pt', 'en', etc.).
+    - audio_duration (float, opcional): Duração total em segundos.
+    - batch_size (int, opcional): Quantidade de variações (padrão 1).
+    - model (str, opcional): Modelo DiT (padrão "acestep-v15-turbo").
+    - thinking (bool, opcional): Ativa raciocínio CoT no LM (padrão True).
     - task_type (str, opcional): 'text2music', 'cover', 'repaint', etc.
-    - reference_audio_path (str, opcional): Caminho local absoluto do arquivo de áudio de referência.
-    - thinking (bool, opcional): Se True, ativa a LLM interna para gerar códigos semânticos.
-    - vocal_language (str, opcional): Idioma da voz ou das letras ('en', 'pt', 'ja', etc.).
-    - sample_mode (bool, opcional): Habilita o modo de geração de amostra aleatória, gerando automaticamente descrições, letras e metadados via modelo de linguagem.
-    - use_format (bool, opcional): Utiliza o modelo de linguagem para aprimorar e formatar o prompt e as letras fornecidas pelo usuário.
-    - model (str, opcional): Seleciona qual modelo DiT será utilizado (ex: "acestep-v15-turbo").
-    - time_signature (str, opcional): Define a fórmula de compasso (ex: 2, 3, 4, 6 representam respectivamente 2/4, 3/4, 4/4, 6/8).
-    - audio_code_string (str, str[], opcional): Tokens semânticos de áudio (5Hz) usados para o funcionamento do llm_dit.
-    - inference_steps (int, opcional): Número de passos de inferência para a geração do áudio.    
+    - reference_audio_path (str, opcional): Caminho absoluto de áudio de referência para estilo/timbre.
+    - src_audio_path (str, opcional): Caminho absoluto de áudio de origem para cover ou edição local.    
     """
     resultados = []
     for i, item in enumerate(tarefas, 1):
