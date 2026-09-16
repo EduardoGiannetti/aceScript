@@ -29,6 +29,16 @@
 ## Exemplo com letra
 <video src="https://github.com/user-attachments/assets/1fe593dc-504a-4ce5-aefe-80bd3d2a4351" controls width="130"></video>
 
+## Exemplos do modelo padrão (v15-turbo) com inference steps = 20:
+<table>
+  <td>
+    <video src="https://github.com/user-attachments/assets/83cafb74-187e-4ab3-bbff-d0925447088c" controls width="130"></video>
+  </td>
+  <td>
+    <video src="https://github.com/user-attachments/assets/3b230768-5d97-40dd-8101-fbda962bb648" controls width="130"></video>
+  </td>
+</table>
+
 # Modelos do ACE-Step
 **LM de 5Hz (Language Model) — Planejador (Opcional)**
 
