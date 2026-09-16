@@ -40,6 +40,29 @@
 </table>
 
 ## Outros exemplos com o v15-turbo:
+### Payload:  
+{
+  "prompt": "brazilian trap ostentação, heavy 808 sub bass, fast rolling hi-hats, snappy snare, melody, autotuned male vocals, groovy flow, flexing, high energy,          punchy modern production",  
+  
+  "lyrics":  
+  "[Intro - ambient synth]\nXandão hoje depois do relatório de Mendonça\nQue isso seu Jorge, calma ai\n\n  
+  
+  [Verse 1]\nFormatação física\nFurou até o tijolo da churrasqueira sem necessidade\nQuando vai ver só histórico do Xvideos\n\n  
+  
+  [Chorus - high energy]\nVai resolver porra nenhuma\nTá devendo\nJá pensou se tem algum Bitcoin ali\n\n  
+  
+  [Verse 2]\nTem ministro do STF precisando desses serviços\nPode ter certeza que tava na agenda telefônica do Vorcaro\n\n  
+  
+  [Outro - fade out]\nVai resolver porra nenhuma",  
+  
+  "thinking": false,  
+  "model": "acestep-v15-turbo",  
+  "vocal_language": "pt",  
+  "audio_format": "mp3",  
+  "audio_duration": 90,  
+  "inference_steps": 20,  
+  "batch_size": 2}  
+
 <table>
   <td>
     <video src="https://github.com/user-attachments/assets/f6e9369c-db62-4f33-9658-838bde34b8d4" controls width="130"></video>
