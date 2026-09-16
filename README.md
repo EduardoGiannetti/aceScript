@@ -39,6 +39,16 @@
   </td>
 </table>
 
+## Outros exemplos com o v15-turbo:
+<table>
+  <td>
+    <video src="https://github.com/user-attachments/assets/f6e9369c-db62-4f33-9658-838bde34b8d4" controls width="130"></video>
+  </td>
+  <td>
+    <video src="https://github.com/user-attachments/assets/f9557534-90d8-41df-be5c-6eca6e4943c4" controls width="130"></video>
+  </td>
+</table>
+
 # Modelos do ACE-Step
 **LM de 5Hz (Language Model) — Planejador (Opcional)**
 
