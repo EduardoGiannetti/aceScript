@@ -29,6 +29,49 @@
 ## Exemplo com letra
 <video src="https://github.com/user-attachments/assets/1fe593dc-504a-4ce5-aefe-80bd3d2a4351" controls width="130"></video>
 
+## Exemplos do modelo padrão (v15-turbo) com inference steps = 20:
+<table>
+  <td>
+    <video src="https://github.com/user-attachments/assets/83cafb74-187e-4ab3-bbff-d0925447088c" controls width="130"></video>
+  </td>
+  <td>
+    <video src="https://github.com/user-attachments/assets/3b230768-5d97-40dd-8101-fbda962bb648" controls width="130"></video>
+  </td>
+</table>
+
+## Outros exemplos com o v15-turbo:
+### Payload:  
+{
+  "prompt": "brazilian trap ostentação, heavy 808 sub bass, fast rolling hi-hats, snappy snare, melody, autotuned male vocals, groovy flow, flexing, high energy,          punchy modern production",  
+  
+  "lyrics":  
+  "[Intro - ambient synth]\nXandão hoje depois do relatório de Mendonça\nQue isso seu Jorge, calma ai\n\n  
+  
+  [Verse 1]\nFormatação física\nFurou até o tijolo da churrasqueira sem necessidade\nQuando vai ver só histórico do Xvideos\n\n  
+  
+  [Chorus - high energy]\nVai resolver porra nenhuma\nTá devendo\nJá pensou se tem algum Bitcoin ali\n\n  
+  
+  [Verse 2]\nTem ministro do STF precisando desses serviços\nPode ter certeza que tava na agenda telefônica do Vorcaro\n\n  
+  
+  [Outro - fade out]\nVai resolver porra nenhuma",  
+  
+  "thinking": false,  
+  "model": "acestep-v15-turbo",  
+  "vocal_language": "pt",  
+  "audio_format": "mp3",  
+  "audio_duration": 90,  
+  "inference_steps": 20,  
+  "batch_size": 2}  
+
+<table>
+  <td>
+    <video src="https://github.com/user-attachments/assets/f6e9369c-db62-4f33-9658-838bde34b8d4" controls width="130"></video>
+  </td>
+  <td>
+    <video src="https://github.com/user-attachments/assets/f9557534-90d8-41df-be5c-6eca6e4943c4" controls width="130"></video>
+  </td>
+</table>
+
 # Modelos do ACE-Step
 **LM de 5Hz (Language Model) — Planejador (Opcional)**
 
