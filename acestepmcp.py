@@ -115,3 +115,4 @@ def awake_server()-> str:
         
 if __name__ == "__main__":
     mcp.run()
+    # gerar_musicas()

@@ -5,25 +5,26 @@ import requests
 
 BASE_URL = "http://localhost:8001"
 DOWNLOAD_DIR = r"C:\Users\EduardoGiannetti\Downloads\mermaid\downloads"
+REMOTION_DIR = r"C:\Users\EduardoGiannetti\Downloads\remotion\timestamps"
 
 def salvar_metadados_musica(task_id: str, payload: dict):
     """
     Salva o payload gerado pelo Claude em um JSON para sincronização futura.
     """
-    # Na API do ACE-Step, a letra costuma ir no campo "prompt" ou "lyrics".
-    texto_letra = payload.get("prompt") or payload.get("lyrics") or ""
+    # Usa diretamente a letra enviada no campo "lyrics" do payload.
+    texto_letra = payload.get("lyrics", "")
     
     # Transforma o bloco de texto em uma lista de linhas/comentários individuais
     lista_comentarios_usados = [linha.strip() for linha in texto_letra.split('\n') if linha.strip()]
     
     dados = {
         "task_id": task_id,
-        "comentarios": lista_comentarios_usados, 
+        "text": lista_comentarios_usados, 
         "payload_completo": payload
     }
     
     # Salva no mesmo diretório de downloads com o ID da tarefa
-    caminho_arquivo = os.path.join(DOWNLOAD_DIR, f"{task_id}_lyrics.json")
+    caminho_arquivo = os.path.join(REMOTION_DIR, f"{task_id}_lyrics.json")
     with open(caminho_arquivo, "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=2)
         
