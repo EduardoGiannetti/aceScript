@@ -27,10 +27,10 @@ if __name__ == "__main__":
         "vocal_language": "pt",
         #"task_type": "cover",
         #"audio_cover_strength": 0.5,
-        "batch_size": 2
+        "batch_size": 1
     }
     file_path = {
         "reference_audio": r"C:\Users\EduardoGiannetti\Downloads\ttk.mp3"
     }
-    task_id = gerar_musica(payload, file_paths=file_path)
-    print(f"Tarefa enviada! ID: {task_id}")
+    task_id, caminhos = gerar_musica(payload, file_paths=file_path)
+    print(f"Tarefa concluída! ID: {task_id}. Áudio(s): {', '.join(caminhos)}")

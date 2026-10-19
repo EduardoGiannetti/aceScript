@@ -3,7 +3,7 @@ from mcp.server.fastmcp import FastMCP
 import requests
 import json
 import subprocess
-from auto import DOWNLOAD_DIR, checar_status_musica, gerar_musica, BASE_URL
+from auto import DOWNLOAD_DIR, checar_status_musica, gerar_musica, encerrar_servidor_acestep, BASE_URL
 
 mcp = FastMCP("ACE-Step Music Generator")
 
@@ -14,6 +14,8 @@ def gerar_musicas(tarefas: list[dict]) -> str:
     1. Antes de chamar esta ferramenta, execute OBRIGATORIAMENTE a tool 'server_status' para verificar se o servidor ACE-Step está ativo.
     2. Se o servidor estiver offline, invoque 'awake_server' para iniciá-lo antes de tentar gerar a música.
     3. Realize todo o fluxo autonomamente a partir da ideia original do usuário, sem pedir confirmações intermediárias.
+    4. Esta ferramenta aguarda a geração, baixa os áudios e, ao final, ENCERRA o servidor ACE-Step para liberar
+       GPU/RAM. Não é necessário chamar 'verificar_status_musica' depois; para gerar novamente, chame 'awake_server'.
 
     PAPEL DE COMPILADOR (ESPECIALISTA EM COMENTÁRIOS CANTADOS):
     Você atua como compilador/prompt engineer do ACE-Step 1.5. Converta as ideias do usuário e os comentários de posts em um payload estruturado para a API.
@@ -61,8 +63,19 @@ def gerar_musicas(tarefas: list[dict]) -> str:
             if "task_type" not in payload:
                 payload["task_type"] = "cover"
 
-        task_id = gerar_musica(payload=payload, file_paths=file_paths)
-        resultados.append(f"Tarefa {i} enviada com sucesso! ID: {task_id}. Use 'verificar_status_musica' para acompanhar.")
+        # A API do ACE-Step só é encerrada após a última tarefa, liberando os recursos.
+        ultima = i == len(tarefas)
+        try:
+            task_id, caminhos = gerar_musica(payload=payload, file_paths=file_paths, encerrar_servidor=ultima)
+            resultados.append(f"Tarefa {i} concluída! ID: {task_id}. Áudio(s) salvo(s) em: {', '.join(caminhos)}")
+        except Exception as e:
+            resultados.append(f"Tarefa {i} falhou: {e}")
+            if not ultima:
+                encerrar_servidor_acestep()
+                resultados.append("Servidor ACE-Step encerrado; tarefas restantes não foram processadas.")
+                break
+
+    resultados.append("Servidor ACE-Step encerrado para liberar recursos. Use 'awake_server' antes de uma nova geração.")
 
     return "\n".join(resultados)
 
